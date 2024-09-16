@@ -8,13 +8,6 @@ export const register = async (req, res) => {
   try {
     // req userdan kelgan malumot
     // res userga jo'natiladigan malumot
-    const errors = validationResult(req);
-
-    // agar serverda xato ketsa post bo'lganda status 400 bo'lib xatolar chiqadi
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errors.array());
-    }
-
     // passowrdni shifravat qilish
     const password = req.body.password;
     const salt = await bcrypt.genSalt(10);

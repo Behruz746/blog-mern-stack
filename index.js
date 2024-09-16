@@ -1,14 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
+import multer from "multer";
 
 import {
   registerValidation,
   loginValidation,
   postCreateValidation,
 } from "./validations/validation.js";
-import checkAuth from "./utils/checkAuth.js";
-import * as UserConrtoller from "./controller/UserController.js";
-import * as PostController from "./controller/PostController.js";
+import { UserController, PostController } from "./controller/index.js";
+import { handlerValidationErrors, checkAuth } from "./utils/index.js";
 
 let PASSWORD = "t4DEW7LeoMEWK0iF";
 mongoose
@@ -24,29 +24,72 @@ mongoose
 
 const app = express();
 
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
 // express json malumotlarni o'qishi uchun
 app.use(express.json());
+// imagelarni route qilish uchun
+app.use("/uploads", express.static("uploads"));
 
 // <----------------- USER ----------------
 // LOGIN
-app.post("/auth/login", loginValidation, UserConrtoller.login);
+app.post(
+  "/auth/login",
+  loginValidation,
+  handlerValidationErrors,
+  UserController.login
+);
 // REGISTER
-app.post("/auth/register/", registerValidation, UserConrtoller.register);
+app.post(
+  "/auth/register",
+  registerValidation,
+  handlerValidationErrors,
+  UserController.register
+);
 // GET ME
-app.get("/auth/me", checkAuth, UserConrtoller.getMe);
+app.get("/auth/me", checkAuth, UserController.getMe);
 // ----------------- USER ---------------->
 
+// <----------------- UPLOAD ----------------
+app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.originalname}`,
+  });
+});
+// ----------------- UPLOAD ---------------->
+
 // <----------------- POST ----------------
-// CREATE
-app.post("/posts", checkAuth, postCreateValidation, PostController.create);
 // GET ALL
 app.get("/posts", PostController.getAll);
 // GET ONE
 app.get("/posts/:id", PostController.getOne);
 // DELETE
-app.delete("/posts/:id", PostController.remove);
+app.delete("/posts/:id", checkAuth, PostController.remove);
 // UPDATE
-// app.patch('/posts', PostController.update)
+app.patch(
+  "/posts/:id",
+  checkAuth,
+  postCreateValidation,
+  handlerValidationErrors,
+  PostController.update
+);
+// CREATE
+app.post(
+  "/posts",
+  checkAuth,
+  postCreateValidation,
+  handlerValidationErrors,
+  PostController.create
+);
 // ----------------- POST ---------------->
 
 // serverni run qilish va port malumotlari
