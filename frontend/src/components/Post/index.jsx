@@ -17,7 +17,7 @@ export const Post = ({
   imageUrl,
   user,
   viewsCount,
-  commentsCount,
+  commentsCount, 
   tags,
   children,
   isFullPost,
