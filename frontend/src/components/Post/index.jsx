@@ -11,30 +11,29 @@ import { UserInfo } from "../UserInfo";
 import { PostSkeleton } from "./Skeleton";
 
 export const Post = ({
-  _id,
+  id,
   title,
   createdAt,
   imageUrl,
   user,
   viewsCount,
-  commentsCount, 
+  commentsCount,
   tags,
   children,
   isFullPost,
   isLoading,
   isEditable,
 }) => {
+
   if (isLoading) {
     return <PostSkeleton />;
   }
-
   const onClickRemove = () => {};
-
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
       {isEditable && (
         <div className={styles.editButtons}>
-          <Link to={`/posts/${_id}/edit`}>
+          <Link to={`/posts/${id}/edit`}>
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
@@ -57,12 +56,12 @@ export const Post = ({
           <h2
             className={clsx(styles.title, { [styles.titleFull]: isFullPost })}
           >
-            {isFullPost ? title : <Link to={`/posts/${_id}`}>{title}</Link>}
+            {isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}
           </h2>
           <ul className={styles.tags}>
-            {tags.map((name) => (
-              <li key={name}>
-                <Link to={`/tag/${name}`}>#{name}</Link>
+            {tags?.map((tag, idx) => (
+              <li key={idx}>
+                <Link to={`/tag/${tag}`}>#{tag}</Link>
               </li>
             ))}
           </ul>
