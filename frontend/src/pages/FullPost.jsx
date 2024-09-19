@@ -4,6 +4,7 @@ import { Post } from "../components/Post";
 import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../axios";
+import ReactMarkdown from "react-markdown";
 
 export const FullPost = () => {
   const { id } = useParams();
@@ -42,7 +43,7 @@ export const FullPost = () => {
         isFullPost
         isLoading={isLoading}
       >
-        <p>{post?.text}</p>
+        <ReactMarkdown children={post?.text} />
       </Post>
       <CommentsBlock
         items={[

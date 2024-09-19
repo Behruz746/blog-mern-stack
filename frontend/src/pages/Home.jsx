@@ -10,6 +10,7 @@ import { fetchPosts, fetchTags } from "../redux/slices/posts";
 
 export const Home = () => {
   const pispatch = useDispatch();
+  const { data } = useSelector((state) => state.auth);
   const { posts, tags } = useSelector((state) => state.posts);
   // isLoad post
   const isPostsLoading = posts.status === "loading";
@@ -49,7 +50,7 @@ export const Home = () => {
                 viewsCount={post?.viewsCount}
                 commentsCount={3} // This should be dynamic if possible
                 tags={post?.tags}
-                isEditable
+                isEditable={data?._id === post?.user?._id}
                 key={post?._id || idx} // Better to use unique id if available
               />
             );
