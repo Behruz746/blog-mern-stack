@@ -70,6 +70,8 @@ app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
 // ----------------- UPLOAD ---------------->
 
 // <----------------- POST ----------------
+// GET POST TAGS
+app.get("/tags", PostController.getLastTags);
 // GET ALL
 app.get("/posts", PostController.getAll);
 // GET ONE
